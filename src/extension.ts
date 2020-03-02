@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -15,11 +16,6 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.newPage', (uri) =>{
-		console.log("typeof uri===>", typeof uri);
-		let pathname: string | undefined = undefined;
-		if (uri) {
-			pathname = uri.fsPath;
-		}
 		vscode.window.showInputBox().then((msg) => {
 			if (msg) {
 				const first = msg[0].toUpperCase();
@@ -29,8 +25,11 @@ export function activate(context: vscode.ExtensionContext) {
 				fs.mkdirSync(targetPath);
 				// 1、index.js
 				if (!fs.existsSync(path.resolve(targetPath, 'index.js'))) {
-					const content = '123';
-					fs.writeFile(path.resolve(targetPath, 'index.js'), content, (err) => {
+					const IMPORT_LABEL = 'import * as React from \'react\';\nimport * as ReactDOM from \'react-dom\';\n';
+					const EXPORT_LABEL = `export default ${componentName};`;
+					const content = `class ${componentName} extends React.Component {\n\t\n}\n`
+
+					fs.writeFile(path.resolve(targetPath, 'index.js'), `${IMPORT_LABEL}${content}${EXPORT_LABEL}`, (err) => {
 
 					});
 				}
