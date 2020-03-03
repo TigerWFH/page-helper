@@ -23,8 +23,8 @@ export function activate(context: vscode.ExtensionContext) {
 				const componentName = first + second;
 				const targetPath = path.resolve(uri.fsPath, msg);
 				fs.mkdirSync(targetPath);
-				// 1、index.js
-				if (!fs.existsSync(path.resolve(targetPath, 'index.js'))) {
+				// 1、index.jsx
+				if (!fs.existsSync(path.resolve(targetPath, 'index.jsx'))) {
 					const IMPORT_LABEL = 'import * as React from \'react\';\nimport * as ReactDOM from \'react-dom\';\n';
 					const EXPORT_LABEL = `export default ${componentName};`;
 					const content = `class ${componentName} extends React.Component {\n\tconstructor(props) {\n\t\tsuper(props);\n\t\ttthis.state = {};\n\t}\n\tstatic getStateFromDerivedProps(nextProps, prevState){\n\t\treturn null;\n\t}\n\tcomponentDidMount() {\n\t}\n\tshouldComponentUpdate() {\n\t\treturn true;\n\t}\n\tgetSnapshotBeforeUpdate(prevProps, prevState) {\n\t}\n\trender(){\n\t\treturn null;\n\t}\n}\n`
