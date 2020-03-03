@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				// 2、index.module.scss
 				if (!fs.existsSync(path.resolve(targetPath, 'index.module.scss'))) {
-					const content = `.${msg} {\n}`;
+					const content = `.${msg.toLowerCase()} {\n}`;
 					fs.writeFile(path.resolve(targetPath, 'index.module.scss'), content, (err) => {
 					});
 				}
@@ -58,7 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				// 3-3、reducers.js
 				if (!fs.existsSync(path.resolve(controllerPath, 'reducers.js'))) {
-					const content = `const initialState = {};\n\nfunction ${msg}Reducer (state = initialState, action) {\n}`;
+					const content = `const initialState = {};\n\nfunction ${msg.toLowerCase()}Reducer (state = initialState, action) {\n}`;
 					fs.writeFile(path.resolve(controllerPath, 'reducers.js'), content, (err) => {
 						
 					});
