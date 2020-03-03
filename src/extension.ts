@@ -35,9 +35,8 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				// 2、index.module.scss
 				if (!fs.existsSync(path.resolve(targetPath, 'index.module.scss'))) {
-					const content = '123';
+					const content = `.${msg} {\n}`;
 					fs.writeFile(path.resolve(targetPath, 'index.module.scss'), content, (err) => {
-
 					});
 				}
 				// 3、controller, 
@@ -59,17 +58,16 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				// 3-3、reducers.js
 				if (!fs.existsSync(path.resolve(controllerPath, 'reducers.js'))) {
-					const content = '123';
+					const content = `const initialState = {};\n\nfunction ${msg}Reducer (state = initialState, action) {\n}`;
 					fs.writeFile(path.resolve(controllerPath, 'reducers.js'), content, (err) => {
-						console.log("finish=======>");
-						vscode.commands.executeCommand('workbench.files.action.refreshFilesExplorer');
-
+						
 					});
 				}
 				// 4、helper.js
 				if (!fs.existsSync(path.resolve(targetPath, 'helper.js'))) {
-					const content = '123';
+					const content = '';
 					fs.writeFile(path.resolve(targetPath, 'helper.js'), content, (err) => {
+						vscode.commands.executeCommand('workbench.files.action.refreshFilesExplorer');
 					});
 				}
 				// vscode.window.showInformationMessage(uri.fsPath || '');
