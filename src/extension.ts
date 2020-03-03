@@ -51,14 +51,14 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				// 3-2、actions.js
 				if (!fs.existsSync(path.resolve(controllerPath, 'actions.js'))) {
-					const content = 'import * as t from \'./type.js\'';
+					const content = 'import * as t from \'./type\'';
 					fs.writeFile(path.resolve(controllerPath, 'actions.js'), content, (err) => {
 
 					});
 				}
 				// 3-3、reducers.js
 				if (!fs.existsSync(path.resolve(controllerPath, 'reducers.js'))) {
-					const content = `const initialState = {};\n\nfunction ${msg.toLowerCase()}Reducer (state = initialState, action) {\n}\n\nexport default ${msg.toLowerCase()}Reducer;`;
+					const content = `import * as t from \'./type\';\nconst initialState = {};\n\nfunction ${msg.toLowerCase()}Reducer (state = initialState, action) {\n}\n\nexport default ${msg.toLowerCase()}Reducer;`;
 					fs.writeFile(path.resolve(controllerPath, 'reducers.js'), content, (err) => {
 						
 					});
