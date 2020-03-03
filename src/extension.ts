@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 				const first = msg[0].toUpperCase();
 				const second = msg.slice(1).toLowerCase();
 				const componentName = first + second;
-				const targetPath = path.resolve(uri.fsPath, msg);
+				const targetPath = path.resolve(uri.fsPath, msg.toLowerCase());
 				fs.mkdirSync(targetPath);
 				// 1、index.jsx
 				if (!fs.existsSync(path.resolve(targetPath, 'index.jsx'))) {
@@ -58,7 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				// 3-3、reducers.js
 				if (!fs.existsSync(path.resolve(controllerPath, 'reducers.js'))) {
-					const content = `const initialState = {};\n\nfunction ${msg.toLowerCase()}Reducer (state = initialState, action) {\n}`;
+					const content = `const initialState = {};\n\nfunction ${msg.toLowerCase()}Reducer (state = initialState, action) {\n}\n\nexport default ${msg.toLowerCase()}Reducer;`;
 					fs.writeFile(path.resolve(controllerPath, 'reducers.js'), content, (err) => {
 						
 					});
