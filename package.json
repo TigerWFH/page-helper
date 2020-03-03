@@ -2,7 +2,7 @@
 	"name": "page-helper",
 	"displayName": "创建页面目录",
 	"description": "",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"publisher": "fhw3931",
 	"engines": {
 		"vscode": "^1.36.0"
