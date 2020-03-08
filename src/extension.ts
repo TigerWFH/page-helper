@@ -18,19 +18,31 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('extension.newPage', (uri) =>{
 		vscode.window.showInputBox().then((msg) => {
 			if (msg) {
-				const first = msg[0].toUpperCase();
-				const second = msg.slice(1).toLowerCase();
+				const paramList = msg.split('.');
+				const suffix = paramList[1] || 'js';
+				const name = paramList[0] || msg;
+				const first = name[0].toUpperCase();
+				const second = name.slice(1).toLowerCase();
 				const componentName = first + second;
-				const targetPath = path.resolve(uri.fsPath, msg.toLowerCase());
+				const targetPath = path.resolve(uri.fsPath, name.toLowerCase());
 				fs.mkdirSync(targetPath);
-				// 1、index.jsx
-				if (!fs.existsSync(path.resolve(targetPath, 'index.jsx'))) {
-					const IMPORT_LABEL = 'import * as React from \'react\';\nimport * as ReactDOM from \'react-dom\';\n';
+				
+				// 1、index
+				if (!fs.existsSync(path.resolve(targetPath, `index.${suffix}`))) {
+					const IMPORT_LABEL = 'import * as React from \'react\';\n';
 					const EXPORT_LABEL = `export default ${componentName};`;
-					const content = `class ${componentName} extends React.Component {\n\tconstructor(props) {\n\t\tsuper(props);\n\t\tthis.state = {};\n\t}\n\tstatic getStateFromDerivedProps(nextProps, prevState){\n\t\treturn null;\n\t}\n\tcomponentDidMount() {\n\t}\n\tshouldComponentUpdate() {\n\t\treturn true;\n\t}\n\tgetSnapshotBeforeUpdate(prevProps, prevState) {\n\t}\n\trender(){\n\t\treturn null;\n\t}\n}\n`
-
-					fs.writeFile(path.resolve(targetPath, 'index.jsx'), `${IMPORT_LABEL}${content}${EXPORT_LABEL}`, (err) => {
-
+					const prefix = `interface IProps {}\ninterface IState {}\n`;
+					const first = `class ${componentName} extends React.Component`;
+					const firstAfter = '<IProps, IState> {';
+					const other = `\n\tconstructor(props) {\n\t\tsuper(props);\n\t\tthis.state = {};\n\t}\n\tstatic getStateFromDerivedProps(nextProps, prevState){\n\t\treturn null;\n\t}\n\tcomponentDidMount() {\n\t}\n\tshouldComponentUpdate() {\n\t\treturn true;\n\t}\n\tgetSnapshotBeforeUpdate(prevProps, prevState) {\n\t}\n\trender(){\n\t\treturn null;\n\t}\n}\n`;
+					let content = '';
+					if (suffix === 'ts') {
+						content = `${prefix}${first}${firstAfter}${other}`;
+					}
+					else {
+						content = `${first} {${other}`;
+					}
+					fs.writeFile(path.resolve(targetPath, `index.${suffix}x`), `${IMPORT_LABEL}${content}${EXPORT_LABEL}`, (err) => {
 					});
 				}
 				// 2、index.module.scss
@@ -39,39 +51,34 @@ export function activate(context: vscode.ExtensionContext) {
 					fs.writeFile(path.resolve(targetPath, 'index.module.scss'), content, (err) => {
 					});
 				}
-				// 3、controller, 
+				// 3、controller
 				const controllerPath = path.resolve(targetPath, 'controller');
 				fs.mkdirSync(controllerPath);
 				// 3-1、type.js
-				if (!fs.existsSync(path.resolve(controllerPath, 'type.js'))) {
+				if (!fs.existsSync(path.resolve(controllerPath, `type.${suffix}`))) {
 					const content = `const prefix=\'${msg.toUpperCase()}/\'`;
-					fs.writeFile(path.resolve(controllerPath, 'type.js'), content, (err) => {
-
+					fs.writeFile(path.resolve(controllerPath, `type.${suffix}`), content, (err) => {
 					});
 				}
 				// 3-2、actions.js
-				if (!fs.existsSync(path.resolve(controllerPath, 'actions.js'))) {
+				if (!fs.existsSync(path.resolve(controllerPath, `actions.${suffix}`))) {
 					const content = 'import * as t from \'./type\'';
-					fs.writeFile(path.resolve(controllerPath, 'actions.js'), content, (err) => {
-
+					fs.writeFile(path.resolve(controllerPath, `actions.${suffix}`), content, (err) => {
 					});
 				}
 				// 3-3、reducers.js
-				if (!fs.existsSync(path.resolve(controllerPath, 'reducers.js'))) {
-					const content = `import * as t from \'./type\';\nconst initialState = {};\n\nfunction ${msg.toLowerCase()}Reducer (state = initialState, action) {\n}\n\nexport default ${msg.toLowerCase()}Reducer;`;
-					fs.writeFile(path.resolve(controllerPath, 'reducers.js'), content, (err) => {
-						
+				if (!fs.existsSync(path.resolve(controllerPath, `reducers.${suffix}`))) {
+					const content = `import * as t from \'./type\';\nconst initialState = {};\n\nfunction ${name.toLowerCase()}Reducer (state = initialState, action) {\n}\n\nexport default ${name.toLowerCase()}Reducer;`;
+					fs.writeFile(path.resolve(controllerPath, `reducers.${suffix}`), content, (err) => {
 					});
 				}
 				// 4、helper.js
-				if (!fs.existsSync(path.resolve(targetPath, 'helper.js'))) {
+				if (!fs.existsSync(path.resolve(targetPath, `helper.${suffix}`))) {
 					const content = '';
-					fs.writeFile(path.resolve(targetPath, 'helper.js'), content, (err) => {
+					fs.writeFile(path.resolve(targetPath, `helper.${suffix}`), content, (err) => {
 						vscode.commands.executeCommand('workbench.files.action.refreshFilesExplorer');
 					});
 				}
-				// vscode.window.showInformationMessage(uri.fsPath || '');
-
 			}
 			else {
 				vscode.window.showInformationMessage('请输入页面名称');
