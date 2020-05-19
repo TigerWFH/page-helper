@@ -1,8 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
-import * as path from 'path';
-import * as fs from 'fs';
+import * as vscode from 'vscode'
+import * as path from 'path'
+import * as fs from 'fs'
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -18,25 +18,23 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('extension.newPage', (uri) =>{
 		vscode.window.showInputBox().then((msg) => {
 			if (msg) {
-				const paramList = msg.split('.');
-				const suffix = paramList[1] || 'js';
-				const name = paramList[0] || msg;
-				const first = name[0].toUpperCase();
-				const second = name.slice(1).toLowerCase();
-				const componentName = first + second;
-				const targetPath = path.resolve(uri.fsPath, name.toLowerCase());
-				fs.mkdirSync(targetPath);
-				
+				const paramList = msg.split('.')
+				const suffix = paramList[1] || 'ts'
+				const name = (paramList[0]).toLowerCase()
+				const componentName = name.charAt(0).toUpperCase() + name.slice(1)
+				const targetPath = path.resolve(uri.fsPath, name)
+				fs.mkdirSync(targetPath)
 				// 1、index
 				if (!fs.existsSync(path.resolve(targetPath, `index.${suffix}`))) {
-					const IMPORT_LABEL = 'import * as React from \'react\';\n';
-					const EXPORT_LABEL = `export default ${componentName};`;
-					const prefix = `interface IProps {}\ninterface IState {}\n`;
+					const IMPORT_LABEL = 'import * as React from \'react\'\n'
+					const EXPORT_LABEL = `export default ${componentName}`
+					const prefix = `interface IProps {}\ninterface IState {}\n`
 					const first = `class ${componentName} extends React.Component`;
 					const firstAfter = '<IProps, IState> {';
-					const other = `\n\tconstructor(props) {\n\t\tsuper(props);\n\t\tthis.state = {};\n\t}\n\tstatic getStateFromDerivedProps(nextProps, prevState){\n\t\treturn null;\n\t}\n\tcomponentDidMount() {\n\t}\n\tshouldComponentUpdate() {\n\t\treturn true;\n\t}\n\tgetSnapshotBeforeUpdate(prevProps, prevState) {\n\t}\n\trender(){\n\t\treturn null;\n\t}\n}\n`;
+					let other = `\n\tconstructor(props) {\n\t\tsuper(props);\n\t\tthis.state = {};\n\t}\n\tstatic getStateFromDerivedProps(nextProps, prevState){\n\t\treturn null;\n\t}\n\tcomponentDidMount() {\n\t}\n\tshouldComponentUpdate() {\n\t\treturn true;\n\t}\n\tgetSnapshotBeforeUpdate(prevProps, prevState) {\n\t}\n\trender(){\n\t\treturn null;\n\t}\n}\n`;
 					let content = '';
 					if (suffix === 'ts') {
+						other = `\n\tconstructor(props: IProps){\n\t\tsuper(props)\n\t\tthis.state={}\n\t\tstatic getStateFromDerivedProps(props: IProps, state: IState){\n\t\treturn null\n\t}\n\tcomponentDidMount(){\n\t}\n\tshouldComponentUpdate(){\n\t\treturn true\n\t}\n\tgetSnapshotBeforeUpdate(prevProps: IProps, prevState: IState){\n\treturn null\n\t}\n\trender(){\n\t\treturn null\n\t}\n}\n`
 						content = `${prefix}${first}${firstAfter}${other}`;
 					}
 					else {
@@ -47,7 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				// 2、index.module.scss
 				if (!fs.existsSync(path.resolve(targetPath, 'index.module.scss'))) {
-					const content = `.${msg.toLowerCase()} {\n}`;
+					const content = `.${name.toLowerCase()} {\n}`;
 					fs.writeFile(path.resolve(targetPath, 'index.module.scss'), content, (err) => {
 					});
 				}
@@ -56,7 +54,7 @@ export function activate(context: vscode.ExtensionContext) {
 				fs.mkdirSync(controllerPath);
 				// 3-1、type.js
 				if (!fs.existsSync(path.resolve(controllerPath, `type.${suffix}`))) {
-					const content = `const prefix=\'${msg.toUpperCase()}/\'`;
+					const content = `export const prefix=\'${name.toUpperCase()}/\'`;
 					fs.writeFile(path.resolve(controllerPath, `type.${suffix}`), content, (err) => {
 					});
 				}
