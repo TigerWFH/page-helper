@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 					let other = `\n\tconstructor(props) {\n\t\tsuper(props);\n\t\tthis.state = {};\n\t}\n\tstatic getStateFromDerivedProps(nextProps, prevState){\n\t\treturn null;\n\t}\n\tcomponentDidMount() {\n\t}\n\tshouldComponentUpdate() {\n\t\treturn true;\n\t}\n\tgetSnapshotBeforeUpdate(prevProps, prevState) {\n\t}\n\trender(){\n\t\treturn null;\n\t}\n}\n`;
 					let content = '';
 					if (suffix === 'ts') {
-						other = `\n\tconstructor(props: IProps){\n\t\tsuper(props)\n\t\tthis.state={}\n\t\tstatic getStateFromDerivedProps(props: IProps, state: IState){\n\t\treturn null\n\t}\n\tcomponentDidMount(){\n\t}\n\tshouldComponentUpdate(){\n\t\treturn true\n\t}\n\tgetSnapshotBeforeUpdate(prevProps: IProps, prevState: IState){\n\treturn null\n\t}\n\trender(){\n\t\treturn null\n\t}\n}\n`
+						other = `\n\tconstructor(props: IProps){\n\t\tsuper(props)\n\t\tthis.state={}\n\t}\n\tstatic getStateFromDerivedProps(props: IProps, state: IState){\n\t\treturn null\n\t}\n\tcomponentDidMount(){\n\t}\n\tshouldComponentUpdate(){\n\t\treturn true\n\t}\n\tgetSnapshotBeforeUpdate(prevProps: IProps, prevState: IState){\n\treturn null\n\t}\n\trender(){\n\t\treturn null\n\t}\n}\n`
 						content = `${prefix}${first}${firstAfter}${other}`;
 					}
 					else {
@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				// 3-3、reducers.js
 				if (!fs.existsSync(path.resolve(controllerPath, `reducers.${suffix}`))) {
-					const content = `import * as t from \'./type\';\nconst initialState = {};\n\nfunction ${name.toLowerCase()}Reducer (state = initialState, action) {\n}\n\nexport default ${name.toLowerCase()}Reducer;`;
+					const content = `import * as t from \'./type\'\nimport {AnyAction} from 'redux'\nconst initialState = {}\n\nfunction ${name.toLowerCase()}Reducer (state = initialState, action: AnyAction) {\n}\n\nexport default ${name.toLowerCase()}Reducer;`;
 					fs.writeFile(path.resolve(controllerPath, `reducers.${suffix}`), content, (err) => {
 					});
 				}
